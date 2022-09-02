@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="com.matoosfe_unomina-ejb_ejb_1.0PU" transaction-type="JTA">
-    <jta-data-source>jdbc__/unomina</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties/>
-  </persistence-unit>
+    <!-- (1) Tipo de transacción de manera General:
+    - Automática - CMP - JTA -Controla la txs es el servidor de aplicación
+    - Manual - BMP - RESOURCE_LOCAL - Controla las txs ustedes programáticamente -->
+    <persistence-unit name="unominaPU" transaction-type="JTA">
+        <!-- (2) Proveedor de persistencia:
+            Implicita - Utiliza el que viene con el servidor de aplicación, Wildfly (Hibernate), Payara/Glassfish(Eclipelink)
+            Explicita - Diferente al que viene con el servidor o se quiere colocar.
+            
+            Hibernate: org.hibernate.jpa.HibernatePersistenceProvider
+            Eclipselink: org.eclipse.persistence.jpa.PersistenceProvider
+        -->
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <!-- (3) Referencia al datasource, el cual es creado en el servidor de aplicación y contiene la información de la base de datos.-->
+        <jta-data-source>jdbc__/unomina</jta-data-source>
+        <!-- (4)  Mapeo de las clases:
+                  -Explícita utilizando el elemento <class></class>
+                  -Implícita y automática utilizando el elmento  <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <!-- (5) Las propiedades de JPA o de la capa de persistencia -->
+        <properties>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+    </persistence-unit>
 </persistence>

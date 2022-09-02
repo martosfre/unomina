@@ -20,6 +20,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -69,6 +70,7 @@ public class NomEmpleado implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "empl_fecha_ingreso")
+    //Especifica el tipo de campo de tiempo y es obligatorio en ese tipo de campos.
     @Temporal(TemporalType.DATE)
     private Date emplFechaIngreso;
     @Column(name = "empl_fecha_salida")
@@ -77,7 +79,7 @@ public class NomEmpleado implements Serializable {
     @Column(name = "empl_fecha_reingreso")
     @Temporal(TemporalType.DATE)
     private Date emplFechaReingreso;
-    @Lob
+    @Lob //Representa campos bytes
     @Column(name = "empl_foto")
     private byte[] emplFoto;
     @Basic(optional = false)
@@ -85,12 +87,15 @@ public class NomEmpleado implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "empl_genero")
     private String emplGenero;
+    //Especifico cual columna esta siendo utilizando en el FK
     @JoinColumn(name = "carg_id", referencedColumnName = "carg_id")
     @ManyToOne(optional = false)
     private NomCargo cargId;
     @JoinColumn(name = "depa_id", referencedColumnName = "depa_id")
     @ManyToOne(optional = false)
     private NomDepartamento depaId;
+    @Transient //Campo no persistente; es decir, este atributo no representa a ninguna columna de la tabla
+    private String emplNombreCompleto;
 
     public NomEmpleado() {
     }
@@ -204,6 +209,15 @@ public class NomEmpleado implements Serializable {
         this.depaId = depaId;
     }
 
+    public String getEmplNombreCompleto() {
+        return emplNombreCompleto;
+    }
+
+    public void setEmplNombreCompleto(String emplNombreCompleto) {
+        this.emplNombreCompleto = emplNombreCompleto;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 0;
