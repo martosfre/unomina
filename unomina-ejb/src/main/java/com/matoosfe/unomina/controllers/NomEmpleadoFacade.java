@@ -4,29 +4,28 @@
  */
 package com.matoosfe.unomina.controllers;
 
-import com.matoosfe.unomina.entities.NomCargo;
-import javax.ejb.Stateless;
+import com.matoosfe.unomina.entities.NomEmpleado;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Clase para administrar las operaciones de cargos
+ * Clase para administrar las operaciones de empleado
  * @author martosfre
  */
-@Stateless
-public class NomCargoFacade extends AbstractFacade<NomCargo> {
-
-    //Especificando cual es la unidad de persistencia (toda la configuración de la bdd)
+public class NomEmpleadoFacade extends AbstractFacade<NomEmpleado> {
+    
     @PersistenceContext(unitName = "unominaPU")
-    private EntityManager em; //Manejador de entidades
+    private EntityManager em;
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
-    public NomCargoFacade() {
-        super(NomCargo.class); //Tabla con la cual va a operar: Clase es la tabla y el new NomCargo() -> registro
+    public NomEmpleadoFacade() {
+        super(NomEmpleado.class); //Llamando al constructor de la clase padre
     }
+    
+    
     
 }
