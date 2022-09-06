@@ -29,6 +29,7 @@
             <version>1.0</version>
             <type>ejb</type>
         </dependency>
+        <!-- Utilizar siempre la misma versión de primefaces/extensions -->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
@@ -37,7 +38,7 @@
         <dependency>
             <groupId>org.primefaces.extensions</groupId>
             <artifactId>primefaces-extensions</artifactId>
-            <version>11.0.6</version>
+            <version>11.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

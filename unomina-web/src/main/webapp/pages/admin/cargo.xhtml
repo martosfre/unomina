@@ -7,16 +7,19 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="/WEB-INF/templates/template.xhtml">
     <ui:define name="contenido">
+        <p:growl id="menGen"/>
         <p:toolbar>
             <p:toolbarGroup align="left">
                 <h:outputText value="Administración de Cargos"/>
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
                 <p:commandButton value="Nuevo" icon="pi pi-plus" process="@this" actionListener="#{cargoBean.resetearFormulario}"
-                                 update=":frmGen:panGriCar" />
-                <p:commandButton value="Guardar" icon="pi pi-save"/>
-                <p:commandButton value="Editar" icon="pi pi-pencil"/>
-                <p:commandButton value="Eliminar" icon="pi pi-trash"/>
+                                 update=":frmGen:panGriCar :frmGen:datTabCar" />
+                <p:commandButton value="Guardar" icon="pi pi-save" process="@this :frmGen:panGriCar"
+                                 actionListener="#{cargoBean.guardar}" update=":frmGen:menGen :frmGen:datTabCar :frmGen:panGriCar"/>
+                <p:commandButton value="Editar" icon="pi pi-pencil" process="@this" actionListener="#{cargoBean.editar}"
+                                 update=":frmGen:panGriCar :frmGen:menGen"/>
+                <p:commandButton value="Eliminar" icon="pi pi-trash" onclick="PF('diaConEli').show();"/>
             </p:toolbarGroup>
         </p:toolbar>
         <br/>
@@ -27,8 +30,9 @@
             <p:inputTextarea id="txaDesCar" value="#{cargoBean.cargo.cargDescripcion}" maxlength="300" rows="4"/>
         </p:panelGrid>
         <br/>
-        <p:dataTable  id="datTabCar" value="#{cargoBean.listaCargos}" var="car" selectionMode="single" 
+        <p:dataTable  id="datTabCar" value="#{cargoBean.listaCargos}" var="car" selectionMode="single"
                       rowKey="#{car.cargId}" paginator="true" rows="10">
+            <p:ajax event="rowSelect" listener="#{cargoBean.seleccionarFila}"/>
             <p:column headerText="Nombre">
                 <h:outputText value="#{car.cargNombre}"/>
             </p:column>
@@ -36,5 +40,15 @@
                  <h:outputText value="#{car.cargDescripcion}"/>
             </p:column>
         </p:dataTable>
+        
+        <p:dialog widgetVar="diaConEli" header="Confirmación Eliminación" width="400px">
+            <p:panelGrid id="panGriEli" columns="3" style="width: 100%">
+                <p:outputLabel value="Está seguro de eliminar el cargo?"/>
+                <p:commandButton value="Si"  process="@this" actionListener="#{cargoBean.eliminar}" 
+                                 update=":frmGen:menGen :frmGen:datTabCar :frmGen:panGriCar"
+                                 oncomplete="PF('diaConEli').hide();"/>
+                <p:commandButton value="No" onclick="PF('diaConEli').hide();"/>
+            </p:panelGrid>
+        </p:dialog>
     </ui:define>
 </ui:composition>

@@ -105,3 +105,6 @@ COMMENT ON COLUMN public.nom_departamento.depa_nombre IS 'Nombre del departament
 COMMENT ON COLUMN public.nom_departamento.depa_descripcion IS 'Descripción del departamento';
 COMMENT ON COLUMN public.nom_departamento.suc_id IS 'Identificador de sucursal';
 
+
+ALTER TABLE public.nom_empleado RENAME CONSTRAINT nom_empleado_fk TO carg_nom_empleado_fk;
+

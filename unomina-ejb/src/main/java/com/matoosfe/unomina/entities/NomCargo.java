@@ -46,11 +46,10 @@ public class NomCargo implements Serializable { //Permite que el objeto con sus 
     @Id
     //Obligatorio para campos autogenerados: Especifica la manera de como se crea la clave primaria (PK)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //Opcional: Se especifica cuando el campo es requerida
-    @Basic(optional = false)
     //Opcional: Especifica a que columna de la tabla se va a mapear el atributo y se coloca cuando el nombre de la columna sea diferente al del atributo.
     @Column(name = "carg_id")
     private Integer cargId;
+     //Opcional: Se especifica cuando el campo es requerida
     @Basic(optional = false)
     //Opcional: Especifica que el campo no sea nulo - Bean Validation
     @NotNull
