@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <title>U-Nomina:.Principal.::</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:form id="frmGen">
+            <pe:layout id="fullPage" style="width: 100%"
+                       stateCookie="true" widgetVar="fpLayoutWidget">
+                <pe:layoutPane position="north" size="140" resizable="false" slidable="false">
+                    <p:graphicImage library="img" name="bannerNomina.jpg" width="100%" height="140px"/>
+                </pe:layoutPane>
+                <pe:layoutPane position="center">
+                    <ui:insert name="contenido">
+                        <h:outputText value="Bienvenidos"/>
+                    </ui:insert>
+                </pe:layoutPane>
+                <pe:layoutPane position="west">
+                    <p:panelMenu style="width:300px">
+                        <p:submenu label="Ménu General ">
+                            <p:menuitem value="Cargo" url="#{request.contextPath}/pages/admin/cargo.mat" icon="pi pi-arrow-right"/>
+                            <p:menuitem value="Empleado" url="#{request.contextPath}/pages/admin/empleado.mat" icon="pi pi-arrow-right"/>
+                        </p:submenu>
+                    </p:panelMenu>
+                </pe:layoutPane>
+                <pe:layoutPane position="south">
+                    <h:outputText value="Copyright @Matoosfe 2022"/>
+                </pe:layoutPane>
+            </pe:layout>
+        </h:form>
+    </h:body>
+</html>

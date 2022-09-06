@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml">
+    <ui:define name="contenido">
+        <p:toolbar>
+            <p:toolbarGroup align="left">
+                <h:outputText value="Administración de Cargos"/>
+            </p:toolbarGroup>
+            <p:toolbarGroup align="right">
+                <p:commandButton value="Nuevo" icon="pi pi-plus" process="@this" actionListener="#{cargoBean.resetearFormulario}"
+                                 update=":frmGen:panGriCar" />
+                <p:commandButton value="Guardar" icon="pi pi-save"/>
+                <p:commandButton value="Editar" icon="pi pi-pencil"/>
+                <p:commandButton value="Eliminar" icon="pi pi-trash"/>
+            </p:toolbarGroup>
+        </p:toolbar>
+        <br/>
+        <p:panelGrid id="panGriCar" columns="4" style="width: 100%">
+            <p:outputLabel for="txtNomCar" value="Nombre:"/>
+            <p:inputText id="txtNomCar" value="#{cargoBean.cargo.cargNombre}" required="true" maxlength="100"/>
+            <p:outputLabel for="txaDesCar" value="Descripción:"/>
+            <p:inputTextarea id="txaDesCar" value="#{cargoBean.cargo.cargDescripcion}" maxlength="300" rows="4"/>
+        </p:panelGrid>
+        <br/>
+        <p:dataTable  id="datTabCar" value="#{cargoBean.listaCargos}" var="car" selectionMode="single" 
+                      rowKey="#{car.cargId}" paginator="true" rows="10">
+            <p:column headerText="Nombre">
+                <h:outputText value="#{car.cargNombre}"/>
+            </p:column>
+             <p:column headerText="Descripción">
+                 <h:outputText value="#{car.cargDescripcion}"/>
+            </p:column>
+        </p:dataTable>
+    </ui:define>
+</ui:composition>
