@@ -4,11 +4,14 @@
  */
 package com.matoosfe.unomina.entities;
 
+import com.matoosfe.unomina.entities.util.EnumGenero;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,7 +52,6 @@ public class NomEmpleado implements Serializable {
     @Basic(optional = false)
     @Column(name = "emp_id")
     private Integer empId;
-    @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "empl_nombres")
@@ -85,8 +87,9 @@ public class NomEmpleado implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
+    @Enumerated(EnumType.STRING)
     @Column(name = "empl_genero")
-    private String emplGenero;
+    private EnumGenero emplGenero;
     //Especifico cual columna esta siendo utilizando en el FK
     @JoinColumn(name = "carg_id", referencedColumnName = "carg_id")
     @ManyToOne(optional = false)
@@ -104,13 +107,12 @@ public class NomEmpleado implements Serializable {
         this.empId = empId;
     }
 
-    public NomEmpleado(Integer empId, String emplNombres, String emplApellidoPaterno, String emplIdentificacion, Date emplFechaIngreso, String emplGenero) {
+    public NomEmpleado(Integer empId, String emplNombres, String emplApellidoPaterno, String emplIdentificacion, Date emplFechaIngreso) {
         this.empId = empId;
         this.emplNombres = emplNombres;
         this.emplApellidoPaterno = emplApellidoPaterno;
         this.emplIdentificacion = emplIdentificacion;
         this.emplFechaIngreso = emplFechaIngreso;
-        this.emplGenero = emplGenero;
     }
 
     public Integer getEmpId() {
@@ -185,13 +187,14 @@ public class NomEmpleado implements Serializable {
         this.emplFoto = emplFoto;
     }
 
-    public String getEmplGenero() {
+    public EnumGenero getEmplGenero() {
         return emplGenero;
     }
 
-    public void setEmplGenero(String emplGenero) {
+    public void setEmplGenero(EnumGenero emplGenero) {
         this.emplGenero = emplGenero;
     }
+
 
     public NomCargo getCargId() {
         return cargId;

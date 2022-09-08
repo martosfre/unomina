@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="contenido">
+         <p:growl id="menGen"/>
+        <p:toolbar>
+            <p:toolbarGroup align="left">
+                <h:outputText value="Administración de Empleados"/>
+            </p:toolbarGroup>
+            <p:toolbarGroup align="right">
+                <p:commandButton value="Nuevo"/>
+                <p:commandButton value="Guardar" process="@this :frmGen:tabVieGen:panGriEmp" 
+                                 actionListener="#{empleadoBean.guardar}" update=":frmGen:menGen"/>
+                <p:commandButton value="Editar"/>
+                <p:commandButton value="Eliminar"/>
+                <span class="ui-separator"> <span
+                        class="ui-icon ui-icon-grip-dotted-vertical"/>
+                </span>
+                <p:commandButton value="Buscar"/>
+            </p:toolbarGroup>
+        </p:toolbar>
+        <br/>
+        <p:tabView id="tabVieGen">
+            <p:tab title="Ingresar">
+                <p:panelGrid id="panGriEmp" columns="4" style="width: 100%">
+                    <p:outputLabel for="selSucEmp" value="Sucursal:"/>
+                    <p:selectOneMenu id="selSucEmp" value="#{empleadoBean.idSuc}" required="true">
+                        <p:ajax event="change" listener="#{empleadoBean.cargarDepartamentosPorSucursal}"
+                                update=":frmGen:tabVieGen:selDepEmp"/>
+                        <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true"/>
+                        <f:selectItems value="#{empleadoBean.listaSucursales}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="selDepEmp" value="Departamento:"/>
+                    <p:selectOneMenu id="selDepEmp" value="#{empleadoBean.idDep}" required="true">
+                        <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true"/>
+                        <f:selectItems value="#{empleadoBean.listaDepartamentos}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="selCarEmp" value="Cargo:"/>
+                    <p:selectOneMenu id="selCarEmp" value="#{empleadoBean.empleado.cargId}" required="true"
+                                     converter="#{convCargo}">
+                        <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{empleadoBean.listaCargos}" var="car" itemLabel="#{car.cargNombre}" itemValue="#{car}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="txtIdeEmp" value="Identificación:"/>
+                    <p:inputText id="txtIdeEmp" value="#{empleadoBean.empleado.emplIdentificacion}" 
+                                 maxlength="13" required="true" validatorMessage="Número de identificación incorrecto">
+                        <f:validateRegex pattern="[0-9]{10|13}"/>
+                    </p:inputText>
+                    <p:outputLabel for="txtNomEmp" value="Nombres:"/>
+                    <p:inputText id="txtNomEmp" value="#{empleadoBean.empleado.emplNombres}" 
+                                 maxlength="50" required="true"/>
+                    <p:outputLabel for="txtApePatEmp" value="Apellido Paterno:"/>
+                    <p:inputText id="txtApePatEmp"  value="#{empleadoBean.empleado.emplApellidoPaterno}" 
+                                 maxlength="25" required="true"/>
+                    <p:outputLabel for="txtApeMatEmp" value="Apellido Materno:"/>
+                    <p:inputText id="txtApeMatEmp" value="#{empleadoBean.empleado.emplApellidoMaterno}"
+                                 maxlength="25" required="true"/>
+                    <p:outputLabel for="selGenEmp" value="Género:"/>
+                    <p:selectOneMenu id="selGenEmp" value="#{empleadoBean.empleado.emplGenero}" required="true">
+                        <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                        <f:selectItem itemLabel="Femenino" itemValue="F"/>
+                        <f:selectItem itemLabel="Indefinido" itemValue="I"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="fotEmp" value="Foto:"/>
+                    <p:graphicImage id="fotEmp" value="#{empleadoBean.fotoBinario ne null ? empleadoBean.fotoBinario : empleadoBean.fotoIncognita}"
+                                    onclick="PF('diaCarFoto').show();" width="200px" cache="false"/>
+                    <p:outputLabel for="calFecIngEmp" value="Fecha de Ingreso:"/>
+                    <p:calendar id="calFecIngEmp" value="#{empleadoBean.empleado.emplFechaIngreso}" 
+                                navigator="true" pattern="yyyy-MM-dd" required="true">
+                        <p:ajax event="dateSelect" update=":frmGen:tabVieGen:calFecSalEmp"/>
+                    </p:calendar>
+                    <p:outputLabel for="calFecSalEmp" value="Fecha de Salida:"/>
+                    <p:calendar id="calFecSalEmp" value="#{empleadoBean.empleado.emplFechaSalida}" 
+                                navigator="true" pattern="yyyy-MM-dd" mindate="#{empleadoBean.empleado.emplFechaIngreso}"/>
+                </p:panelGrid>
+            </p:tab>
+            <p:tab title="Listar">
+                <p:dataTable id="datTabEmp" value="#{empleadoBean.listaEmpleados}" var="emp" selectionMode="single"
+                             rowKey="#{emp.empId}" paginator="true" rows="10">
+                    <f:facet name="header">
+                        <p:outputLabel value="Lista de Empleados"/>
+                    </f:facet>
+                    <p:column headerText="Deptartamento">
+                        <h:outputText value="#{emp.depaId.depaNombre}"/>
+                    </p:column>
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{emp.cargId.cargNombre}"/>
+                    </p:column>
+                    <p:column headerText="Identificación">
+                        <h:outputText value="#{emp.emplIdentificacion}"/>
+                    </p:column>
+                    <p:column headerText="Nombres">
+                        <h:outputText value="#{emp.emplNombres}"/>
+                    </p:column>
+                    <p:column headerText="Apellidos">
+                        <h:outputText value="#{emp.emplApellidoPaterno} #{emp.emplApellidoMaterno}"/>
+                    </p:column>
+                    <p:column headerText="Fecha de Ingreso">
+                        <h:outputText value="#{emp.emplFechaIngreso}">
+                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:tab>
+        </p:tabView>
+        <p:dialog widgetVar="diaCarFoto" header="Cargar Foto" width="450px">
+            <p:fileUpload listener="#{empleadoBean.subirFoto}" mode="advanced" dragDropSupport="false"
+                  update=":frmGen:tabVieGen:fotEmp" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                  oncomplete="PF('diaCarFoto').hide();"/>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
