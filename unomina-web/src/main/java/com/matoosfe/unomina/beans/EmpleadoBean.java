@@ -11,6 +11,7 @@ import com.matoosfe.unomina.controllers.NomSucursalFacade;
 import com.matoosfe.unomina.entities.NomCargo;
 import com.matoosfe.unomina.entities.NomDepartamento;
 import com.matoosfe.unomina.entities.NomEmpleado;
+import com.matoosfe.unomina.entities.util.EnumGenero;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -22,6 +23,7 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -46,6 +48,10 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
     private String fotoIncognita;
     private StreamedContent fotoBinario;
 
+//    private List<EnumGenero> listaGeneros;
+    private List<SelectItem> listaGeneros;
+    private String valorBusqueda;
+
     @Inject
     private NomSucursalFacade adminSucursal;
     @Inject
@@ -58,6 +64,7 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
         this.listaSucursales = new ArrayList<>();
         this.listaDepartamentos = new ArrayList<>();
         this.listaCargos = new ArrayList<>();
+        this.listaGeneros = new ArrayList<>();
         this.fotoIncognita = "/resources/img/usuarioAnonimo.webp";
     }
 
@@ -141,6 +148,29 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
         this.fotoBinario = fotoBinario;
     }
 
+//    public List<EnumGenero> getListaGeneros() {
+//        return listaGeneros;
+//    }
+//
+//    public void setListaGeneros(List<EnumGenero> listaGeneros) {
+//        this.listaGeneros = listaGeneros;
+//    }
+    public List<SelectItem> getListaGeneros() {
+        return listaGeneros;
+    }
+
+    public void setListaGeneros(List<SelectItem> listaGeneros) {
+        this.listaGeneros = listaGeneros;
+    }
+
+    public String getValorBusqueda() {
+        return valorBusqueda;
+    }
+
+    public void setValorBusqueda(String valorBusqueda) {
+        this.valorBusqueda = valorBusqueda;
+    }
+
     /**
      * Método para cargar las sucursales
      */
@@ -163,6 +193,18 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
         this.listaDepartamentos.clear();
         adminSucursal.consultarDepartamentosPorSucursal(idSuc).forEach(dep -> this.listaDepartamentos
                 .add(new SelectItem(dep.getDepaId(), dep.getDepaNombre())));
+    }
+
+    /**
+     * Método para cargar generos
+     */
+    private void cargarGeneros() {
+//        this.listaGeneros.add(EnumGenero.MASCULINO);
+//        this.listaGeneros.add(EnumGenero.FEMENINO);
+//        this.listaGeneros.add(EnumGenero.INDEFINIDO);
+        this.listaGeneros.add(new SelectItem(EnumGenero.MASCULINO.getValor(), EnumGenero.MASCULINO.name()));
+        this.listaGeneros.add(new SelectItem(EnumGenero.FEMENINO.getValor(), EnumGenero.FEMENINO.name()));
+        this.listaGeneros.add(new SelectItem(EnumGenero.INDEFINIDO.getValor(), EnumGenero.INDEFINIDO.name()));   
     }
 
     /**
@@ -189,11 +231,68 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
     }
 
     /**
+     * Método para buscar empleados
+     */
+    public void buscar() {
+        try {
+            this.listaEmpleados = adminEmpleado.buscarEmpleados(valorBusqueda);
+            if (listaEmpleados.isEmpty()) {
+                anadirAdvertencia("No existen empleados con ese criterio de búsqueda");
+            }
+        } catch (Exception e) {
+            anadirError("Problemas al buscar empleados:" + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para seleccionar un empleado
+     *
+     * @param ev
+     */
+    public void seleccionarFila(SelectEvent<NomEmpleado> ev) {
+        this.empleadoSel = ev.getObject();
+    }
+
+    /**
+     * Método para cargar el empleado seleccionado
+     */
+    public void editar() {
+        if (empleadoSel != null) {
+            this.empleado = empleadoSel;
+            this.idSuc = empleado.getDepaId().getSucId().getSucId();
+            cargarDepartamentosPorSucursal();
+            this.idDep = empleado.getDepaId().getDepaId();
+            InputStream fis = new ByteArrayInputStream(empleado.getEmplFoto());
+            fotoBinario = DefaultStreamedContent.builder().stream(() -> fis).build();
+        } else {
+            anadirError("Se debe seleccionar un empleado");
+        }
+    }
+
+    /**
+     * Método para eliminar un empleado
+     */
+    public void eliminar() {
+        try {
+            if (empleadoSel != null) {
+                adminEmpleado.eliminar(empleadoSel);
+                resetearFormulario();
+            } else {
+                anadirError("Se debe seleccionar un empleado");
+            }
+        } catch (Exception e) {
+            anadirError("Error al eliminar:" + e.getMessage());
+        }
+    }
+
+    /**
      * Método para resetear el formulario
      */
     public void resetearFormulario() {
         this.empleado = new NomEmpleado();
         this.empleadoSel = null; //No selección
+        this.fotoIncognita = "/resources/img/usuarioAnonimo.webp";
+        this.fotoBinario = null;
     }
 
     /**
@@ -211,5 +310,6 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
     public void inicializar() {
         cargarSucursales();
         cargarCargos();
+        cargarGeneros();
     }
 }

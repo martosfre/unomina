@@ -4,14 +4,14 @@
  */
 package com.matoosfe.unomina.entities;
 
+import com.matoosfe.unomina.entities.converters.ConvGeneroEnum;
 import com.matoosfe.unomina.entities.util.EnumGenero;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -86,10 +86,11 @@ public class NomEmpleado implements Serializable {
     private byte[] emplFoto;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Enumerated(EnumType.STRING)
     @Column(name = "empl_genero")
-    private EnumGenero emplGenero;
+//    @Convert(converter = ConvGenero.class)
+//    @Convert(converter = ConvGeneroEnum.class)
+    //private EnumGenero emplGenero;
+    private String emplGenero;
     //Especifico cual columna esta siendo utilizando en el FK
     @JoinColumn(name = "carg_id", referencedColumnName = "carg_id")
     @ManyToOne(optional = false)
@@ -101,6 +102,22 @@ public class NomEmpleado implements Serializable {
     private String emplNombreCompleto;
 
     public NomEmpleado() {
+    }
+
+    public NomEmpleado(Integer empId, String emplNombres, String emplApellidoPaterno, String emplApellidoMaterno,
+            String emplIdentificacion, Date emplFechaIngreso, Date emplFechaSalida,
+            byte[] emplFoto, NomCargo cargId, NomDepartamento depaId) {
+        this.empId = empId;
+        this.emplNombres = emplNombres;
+        this.emplApellidoPaterno = emplApellidoPaterno;
+        this.emplApellidoMaterno = emplApellidoMaterno;
+        this.emplIdentificacion = emplIdentificacion;
+        this.emplFechaIngreso = emplFechaIngreso;
+        this.emplFechaSalida = emplFechaSalida;
+        this.emplFoto = emplFoto;
+        this.cargId = cargId;
+        this.depaId = depaId;
+
     }
 
     public NomEmpleado(Integer empId) {
@@ -187,14 +204,22 @@ public class NomEmpleado implements Serializable {
         this.emplFoto = emplFoto;
     }
 
-    public EnumGenero getEmplGenero() {
+//    public EnumGenero getEmplGenero() {
+//        return emplGenero;
+//    }
+//
+//    public void setEmplGenero(EnumGenero emplGenero) {
+//        this.emplGenero = emplGenero;
+//    }
+
+    public String getEmplGenero() {
         return emplGenero;
     }
 
-    public void setEmplGenero(EnumGenero emplGenero) {
+    public void setEmplGenero(String emplGenero) {
         this.emplGenero = emplGenero;
     }
-
+    
 
     public NomCargo getCargId() {
         return cargId;
@@ -220,7 +245,6 @@ public class NomEmpleado implements Serializable {
         this.emplNombreCompleto = emplNombreCompleto;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -245,5 +269,5 @@ public class NomEmpleado implements Serializable {
     public String toString() {
         return "com.matoosfe.unomina.entities.NomEmpleado[ empId=" + empId + " ]";
     }
-    
+
 }

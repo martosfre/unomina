@@ -8,25 +8,26 @@
                 template="/WEB-INF/templates/template.xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:define name="contenido">
-         <p:growl id="menGen"/>
+        <p:growl id="menGen"/>
         <p:toolbar>
             <p:toolbarGroup align="left">
                 <h:outputText value="Administración de Empleados"/>
             </p:toolbarGroup>
             <p:toolbarGroup align="right">
-                <p:commandButton value="Nuevo"/>
+                <p:commandButton value="Nuevo" process="@this" actionListener="#{empleadoBean.resetearFormulario}"
+                                 update=":frmGen:tabVieGen:panGriEmp :frmGen:tabVieGen:datTabEmp :frmGen:menGen"/>
                 <p:commandButton value="Guardar" process="@this :frmGen:tabVieGen:panGriEmp" 
-                                 actionListener="#{empleadoBean.guardar}" update=":frmGen:menGen"/>
-                <p:commandButton value="Editar"/>
-                <p:commandButton value="Eliminar"/>
+                                 actionListener="#{empleadoBean.guardar}" update=":frmGen:tabVieGen:panGriEmp :frmGen:menGen"/>
                 <span class="ui-separator"> <span
                         class="ui-icon ui-icon-grip-dotted-vertical"/>
                 </span>
-                <p:commandButton value="Buscar"/>
+                <p:commandButton value="Editar" process="@this" actionListener="#{empleadoBean.editar}"
+                                 update=":frmGen:tabVieGen:panGriEmp"/>
+                <p:commandButton value="Eliminar" onclick="PF('diaConEli').show();"/>               
             </p:toolbarGroup>
         </p:toolbar>
         <br/>
-        <p:tabView id="tabVieGen">
+        <p:tabView id="tabVieGen" cache="false">
             <p:tab title="Ingresar">
                 <p:panelGrid id="panGriEmp" columns="4" style="width: 100%">
                     <p:outputLabel for="selSucEmp" value="Sucursal:"/>
@@ -50,7 +51,7 @@
                     <p:outputLabel for="txtIdeEmp" value="Identificación:"/>
                     <p:inputText id="txtIdeEmp" value="#{empleadoBean.empleado.emplIdentificacion}" 
                                  maxlength="13" required="true" validatorMessage="Número de identificación incorrecto">
-                        <f:validateRegex pattern="[0-9]{10|13}"/>
+                        <f:validateRegex pattern="^(?:[0-9]{10}|[0-9]{13})$"/>
                     </p:inputText>
                     <p:outputLabel for="txtNomEmp" value="Nombres:"/>
                     <p:inputText id="txtNomEmp" value="#{empleadoBean.empleado.emplNombres}" 
@@ -64,9 +65,7 @@
                     <p:outputLabel for="selGenEmp" value="Género:"/>
                     <p:selectOneMenu id="selGenEmp" value="#{empleadoBean.empleado.emplGenero}" required="true">
                         <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true"/>
-                        <f:selectItem itemLabel="Masculino" itemValue="M"/>
-                        <f:selectItem itemLabel="Femenino" itemValue="F"/>
-                        <f:selectItem itemLabel="Indefinido" itemValue="I"/>
+                        <f:selectItems value="#{empleadoBean.listaGeneros}"/>
                     </p:selectOneMenu>
                     <p:outputLabel for="fotEmp" value="Foto:"/>
                     <p:graphicImage id="fotEmp" value="#{empleadoBean.fotoBinario ne null ? empleadoBean.fotoBinario : empleadoBean.fotoIncognita}"
@@ -82,11 +81,20 @@
                 </p:panelGrid>
             </p:tab>
             <p:tab title="Listar">
+                <p:panelGrid id="panGriBusEmp" columns="3" style="width: 100%">
+                    <p:outputLabel for="txtBusPor" value="Identificación/Apellido:"/>
+                    <p:inputText id="txtBusPor" value="#{empleadoBean.valorBusqueda}"/>
+                    <p:commandButton value="Buscar" process="@this :frmGen:tabVieGen:panGriBusEmp"
+                                     actionListener="#{empleadoBean.buscar}" 
+                                     update=":frmGen:tabVieGen:datTabEmp :frmGen:tabVieGen:panGriBusEmp :frmGen:menGen "/>
+                </p:panelGrid>
+                <br/>
                 <p:dataTable id="datTabEmp" value="#{empleadoBean.listaEmpleados}" var="emp" selectionMode="single"
                              rowKey="#{emp.empId}" paginator="true" rows="10">
                     <f:facet name="header">
                         <p:outputLabel value="Lista de Empleados"/>
                     </f:facet>
+                    <p:ajax event="rowSelect" listener="#{empleadoBean.seleccionarFila}"/>
                     <p:column headerText="Deptartamento">
                         <h:outputText value="#{emp.depaId.depaNombre}"/>
                     </p:column>
@@ -112,8 +120,17 @@
         </p:tabView>
         <p:dialog widgetVar="diaCarFoto" header="Cargar Foto" width="450px">
             <p:fileUpload listener="#{empleadoBean.subirFoto}" mode="advanced" dragDropSupport="false"
-                  update=":frmGen:tabVieGen:fotEmp" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
-                  oncomplete="PF('diaCarFoto').hide();"/>
+                          update=":frmGen:tabVieGen:fotEmp" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                          oncomplete="PF('diaCarFoto').hide();"/>
+        </p:dialog>
+        <p:dialog widgetVar="diaConEli" header="Confirmación Eliminación" width="400px">
+            <p:panelGrid id="panGriEli" columns="3" style="width: 100%">
+                <p:outputLabel value="Está seguro de eliminar el empleado?"/>
+                <p:commandButton value="Si"  process="@this" actionListener="#{empleadoBean.eliminar}" 
+                                 update=":frmGen:menGen :frmGen:tabVieGen:datTabEmp :frmGen:tabVieGen:panGriEmp"
+                                 oncomplete="PF('diaConEli').hide();"/>
+                <p:commandButton value="No" onclick="PF('diaConEli').hide();"/>
+            </p:panelGrid>
         </p:dialog>
     </ui:define>
 </ui:composition>

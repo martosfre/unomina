@@ -15,7 +15,8 @@ public abstract class AbstractManagedBean {
 
     /**
      * Método para añadir un mensaje de información
-     * @param mensaje 
+     *
+     * @param mensaje
      */
     public void anadirInfo(String mensaje) {
         anadirMensaje(mensaje, FacesMessage.SEVERITY_INFO);
@@ -23,16 +24,26 @@ public abstract class AbstractManagedBean {
 
     /**
      * Método para añadir un mensaje de error
-     * @param mensaje 
+     *
+     * @param mensaje
      */
     public void anadirError(String mensaje) {
         anadirMensaje(mensaje, FacesMessage.SEVERITY_ERROR);
     }
 
     /**
+     * Método para añadir un mensaje de advertencia
+     * @param mensaje 
+     */
+    public void anadirAdvertencia(String mensaje) {
+        anadirMensaje(mensaje, FacesMessage.SEVERITY_WARN);
+    }
+
+    /**
      * Método para añadir un mensaje
+     *
      * @param mensaje
-     * @param severidad 
+     * @param severidad
      */
     private void anadirMensaje(String mensaje, FacesMessage.Severity severidad) {
         FacesMessage mensajeJSF = new FacesMessage();
