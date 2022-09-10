@@ -19,11 +19,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author martosfre
  */
+@XmlRootElement
 @Entity
 @Table(name = "nom_empresa")
 @NamedQueries({
@@ -34,12 +37,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "NomEmpresa.findByEmprNombreComercial", query = "SELECT n FROM NomEmpresa n WHERE n.emprNombreComercial = :emprNombreComercial")})
 public class NomEmpresa implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "empr_id")
-    private Integer emprId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 13)
@@ -55,6 +52,13 @@ public class NomEmpresa implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "empr_nombre_comercial")
     private String emprNombreComercial;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "empr_id")
+    private Integer emprId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "emprId")
     private List<NomSucursal> nomSucursalList;
 
@@ -103,7 +107,7 @@ public class NomEmpresa implements Serializable {
     public void setEmprNombreComercial(String emprNombreComercial) {
         this.emprNombreComercial = emprNombreComercial;
     }
-
+    @XmlTransient //Siempre en el getter para evitar el infinite loop
     public List<NomSucursal> getNomSucursalList() {
         return nomSucursalList;
     }

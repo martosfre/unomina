@@ -4,13 +4,10 @@
  */
 package com.matoosfe.unomina.entities;
 
-import com.matoosfe.unomina.entities.converters.ConvGeneroEnum;
-import com.matoosfe.unomina.entities.util.EnumGenero;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,11 +23,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author martosfre
  */
+@XmlRootElement
 @Entity
 @Table(name = "nom_empleado")
 @NamedQueries({
@@ -46,12 +45,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "NomEmpleado.findByEmplGenero", query = "SELECT n FROM NomEmpleado n WHERE n.emplGenero = :emplGenero")})
 public class NomEmpleado implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "emp_id")
-    private Integer empId;
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "empl_nombres")
@@ -72,25 +66,29 @@ public class NomEmpleado implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "empl_fecha_ingreso")
-    //Especifica el tipo de campo de tiempo y es obligatorio en ese tipo de campos.
     @Temporal(TemporalType.DATE)
     private Date emplFechaIngreso;
+    @Lob
+    @Column(name = "empl_foto")
+    private byte[] emplFoto;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "empl_genero")
+    private String emplGenero;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "emp_id")
+    private Integer empId;
     @Column(name = "empl_fecha_salida")
     @Temporal(TemporalType.DATE)
     private Date emplFechaSalida;
     @Column(name = "empl_fecha_reingreso")
     @Temporal(TemporalType.DATE)
     private Date emplFechaReingreso;
-    @Lob //Representa campos bytes
-    @Column(name = "empl_foto")
-    private byte[] emplFoto;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "empl_genero")
-//    @Convert(converter = ConvGenero.class)
-//    @Convert(converter = ConvGeneroEnum.class)
-    //private EnumGenero emplGenero;
-    private String emplGenero;
     //Especifico cual columna esta siendo utilizando en el FK
     @JoinColumn(name = "carg_id", referencedColumnName = "carg_id")
     @ManyToOne(optional = false)
@@ -269,5 +267,4 @@ public class NomEmpleado implements Serializable {
     public String toString() {
         return "com.matoosfe.unomina.entities.NomEmpleado[ empId=" + empId + " ]";
     }
-
 }

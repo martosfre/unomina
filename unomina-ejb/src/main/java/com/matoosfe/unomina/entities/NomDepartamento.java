@@ -21,11 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author martosfre
  */
+@XmlRootElement
 @Entity
 @Table(name = "nom_departamento")
 @NamedQueries({
@@ -35,12 +38,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "NomDepartamento.findByDepaDescripcion", query = "SELECT n FROM NomDepartamento n WHERE n.depaDescripcion = :depaDescripcion")})
 public class NomDepartamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "depa_id")
-    private Integer depaId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -49,6 +46,13 @@ public class NomDepartamento implements Serializable {
     @Size(max = 300)
     @Column(name = "depa_descripcion")
     private String depaDescripcion;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "depa_id")
+    private Integer depaId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "depaId")
     private List<NomEmpleado> nomEmpleadoList;
     @JoinColumn(name = "suc_id", referencedColumnName = "suc_id")
@@ -90,7 +94,7 @@ public class NomDepartamento implements Serializable {
     public void setDepaDescripcion(String depaDescripcion) {
         this.depaDescripcion = depaDescripcion;
     }
-
+    @XmlTransient
     public List<NomEmpleado> getNomEmpleadoList() {
         return nomEmpleadoList;
     }

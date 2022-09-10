@@ -21,11 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author martosfre
  */
+@XmlRootElement
 @Entity
 @Table(name = "nom_sucursal")
 @NamedQueries({
@@ -38,12 +41,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "NomSucursal.findByLocaId", query = "SELECT n FROM NomSucursal n WHERE n.locaId = :locaId")})
 public class NomSucursal implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "suc_id")
-    private Integer sucId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -66,6 +63,13 @@ public class NomSucursal implements Serializable {
     @NotNull
     @Column(name = "loca_id")
     private int locaId;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "suc_id")
+    private Integer sucId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sucId")
     private List<NomDepartamento> nomDepartamentoList;
     @JoinColumn(name = "empr_id", referencedColumnName = "empr_id")
@@ -134,7 +138,7 @@ public class NomSucursal implements Serializable {
     public void setLocaId(int locaId) {
         this.locaId = locaId;
     }
-
+    @XmlTransient
     public List<NomDepartamento> getNomDepartamentoList() {
         return nomDepartamentoList;
     }
@@ -175,5 +179,4 @@ public class NomSucursal implements Serializable {
     public String toString() {
         return "com.matoosfe.unomina.entities.NomSucursal[ sucId=" + sucId + " ]";
     }
-    
 }
