@@ -6,6 +6,7 @@ package com.matoosfe.unomina.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -108,7 +109,8 @@ public class NomCargo implements Serializable {
         this.cargDescripcion = cargDescripcion;
     }
 
-    @XmlTransient
+    @XmlTransient //SOAP
+    @JsonbTransient //REST
     public List<NomEmpleado> getNomEmpleadoList() {
         return nomEmpleadoList;
     }

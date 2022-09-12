@@ -28,7 +28,7 @@ import javax.xml.ws.handler.MessageContext;
  *  de la clase con el sufijo Service
  */
 @WebService(name = "ServiceCargo")
-public class WSCargo {
+public class WSCargoService {
 
     @Resource
     WebServiceContext wsctx;
