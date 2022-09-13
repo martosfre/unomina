@@ -89,6 +89,8 @@ public class NomEmpleado implements Serializable {
     @Column(name = "empl_fecha_reingreso")
     @Temporal(TemporalType.DATE)
     private Date emplFechaReingreso;
+    @Column(name = "empl_correo")
+    private String emplCorreo;
     //Especifico cual columna esta siendo utilizando en el FK
     @JoinColumn(name = "carg_id", referencedColumnName = "carg_id")
     @ManyToOne(optional = false)
@@ -194,6 +196,14 @@ public class NomEmpleado implements Serializable {
         this.emplFechaReingreso = emplFechaReingreso;
     }
 
+    public String getEmplCorreo() {
+        return emplCorreo;
+    }
+
+    public void setEmplCorreo(String emplCorreo) {
+        this.emplCorreo = emplCorreo;
+    }
+
     public byte[] getEmplFoto() {
         return emplFoto;
     }
@@ -209,7 +219,6 @@ public class NomEmpleado implements Serializable {
 //    public void setEmplGenero(EnumGenero emplGenero) {
 //        this.emplGenero = emplGenero;
 //    }
-
     public String getEmplGenero() {
         return emplGenero;
     }
@@ -217,7 +226,6 @@ public class NomEmpleado implements Serializable {
     public void setEmplGenero(String emplGenero) {
         this.emplGenero = emplGenero;
     }
-    
 
     public NomCargo getCargId() {
         return cargId;

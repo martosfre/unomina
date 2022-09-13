@@ -305,6 +305,15 @@ public class EmpleadoBean extends AbstractManagedBean implements Serializable {
         fotoBinario = DefaultStreamedContent.builder().stream(() -> fis).build();
         this.empleado.setEmplFoto(event.getFile().getContent());
     }
+    
+    public void guardarTx(){
+        //Incorrecto por no se controla la tx
+        adminCargo.guardar(new NomCargo(3));
+        adminEmpleado.guardar(empleado);
+        
+        adminEmpleado.guardarCargoEmpleadoTx();// Correcto
+      
+    }
 
     @PostConstruct
     public void inicializar() {

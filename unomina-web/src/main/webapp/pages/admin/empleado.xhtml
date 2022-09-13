@@ -62,6 +62,11 @@
                     <p:outputLabel for="txtApeMatEmp" value="Apellido Materno:"/>
                     <p:inputText id="txtApeMatEmp" value="#{empleadoBean.empleado.emplApellidoMaterno}"
                                  maxlength="25" required="true"/>
+                    <p:outputLabel for="txtCorrEmp" value="Correo Electrónico:"/>
+                    <p:inputText id="txtCorrEmp" value="#{empleadoBean.empleado.emplCorreo}"
+                                 maxlength="50">
+                        <f:validator validatorId="valCorreo"/>
+                    </p:inputText>
                     <p:outputLabel for="selGenEmp" value="Género:"/>
                     <p:selectOneMenu id="selGenEmp" value="#{empleadoBean.empleado.emplGenero}" required="true">
                         <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true"/>

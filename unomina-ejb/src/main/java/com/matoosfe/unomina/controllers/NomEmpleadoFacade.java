@@ -4,19 +4,26 @@
  */
 package com.matoosfe.unomina.controllers;
 
+import com.matoosfe.unomina.entities.NomCargo;
+import com.matoosfe.unomina.entities.NomDepartamento;
 import com.matoosfe.unomina.entities.NomEmpleado;
+import com.matoosfe.unomina.entities.util.EnumGenero;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 /**
  * Clase para administrar las operaciones de empleado
  *
  * @author martosfre
  */
+//@TransactionManagement(TransactionManagementType.BEAN) //Tx Manual
+@TransactionManagement(TransactionManagementType.CONTAINER) //Tx Automático, por defecto
 @Stateless
 public class NomEmpleadoFacade extends AbstractFacade<NomEmpleado> {
 
@@ -69,6 +76,47 @@ public class NomEmpleadoFacade extends AbstractFacade<NomEmpleado> {
         }
 
         return conEmp.getResultList();
+    }
+
+    public void guardarCargoEmpleadoTx() {
+        NomCargo cargo = new NomCargo();
+        cargo.setCargNombre("CargoTx");
+        cargo.setCargDescripcion("Cargo TX Descripción");
+        em.persist(cargo);
+
+        NomDepartamento departamento = new NomDepartamento(1);
+        crearEmpleado(cargo, departamento);
+    }
+
+    //Comit y si falla se hace rollback
+    private void crearEmpleado(NomCargo cargo, NomDepartamento departamento) {
+        NomEmpleado empleado = new NomEmpleado();
+        empleado.setCargId(cargo);
+        empleado.setDepaId(departamento);
+        empleado.setEmplNombres("Evelyn Maritza");
+        empleado.setEmplApellidoPaterno("Ruíz");
+        empleado.setEmplApellidoMaterno("Cruz");
+        empleado.setEmplGenero(EnumGenero.FEMENINO.getValor());
+        empleado.setEmplIdentificacion("1715234126");
+        empleado.setEmplFechaIngreso(new Date());
+
+        em.persist(empleado);
+    }
+
+    public void guardarCargoEmpleadoTxManual() {
+        try {
+            em.getTransaction().begin();
+            NomCargo cargo = new NomCargo();
+            cargo.setCargNombre("CargoTx");
+            cargo.setCargDescripcion("Cargo TX Descripción");
+            em.persist(cargo);
+
+            NomDepartamento departamento = new NomDepartamento(1);
+            crearEmpleado(cargo, departamento);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        }
     }
 
 }
